@@ -48,6 +48,7 @@ fn nokhwa_initialize_blocking() -> Result<(), &'static str> {
 struct NokhwaResource {
     camera: Camera,
     resolution: Extent3d,
+    is_srgb: bool,
 }
 
 
@@ -60,6 +61,7 @@ pub struct WebcamStream {
 pub struct BevyWebcamPlugin {
     pub camera_index: CameraIndex,
     pub requested_format_type: RequestedFormatType,
+    pub is_srgb: bool,
 }
 
 impl Default for BevyWebcamPlugin {
@@ -67,6 +69,7 @@ impl Default for BevyWebcamPlugin {
         Self {
             camera_index: CameraIndex::Index(0),
             requested_format_type: RequestedFormatType::AbsoluteHighestFrameRate,
+            is_srgb: true,
         }
     }
 }
@@ -102,6 +105,7 @@ impl Plugin for BevyWebcamPlugin {
                 height: resolution.height_y,
                 depth_or_array_layers: 1,
             },
+            is_srgb: self.is_srgb,
         };
         app.insert_non_send_resource(nokhwa_resource);
 
@@ -122,11 +126,17 @@ fn initial_frame_setup(
     nokhwa_resource: NonSend<NokhwaResource>,
     mut nokhwa_stream: ResMut<WebcamStream>,
 ) {
+    let format = if nokhwa_resource.is_srgb {
+        TextureFormat::Rgba8UnormSrgb
+    } else {
+        TextureFormat::Rgba8Unorm
+    };
+
     nokhwa_stream.frame = images.add(Image::new_fill(
         nokhwa_resource.resolution,
         TextureDimension::D2,
         &[0u8; 4],
-        TextureFormat::Rgba8UnormSrgb,
+        format,
         RenderAssetUsages::default(),
     ));
 }
