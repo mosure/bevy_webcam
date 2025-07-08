@@ -1,0 +1,61 @@
+name: build
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+env:
+  CARGO_TERM_COLOR: always
+  RUST_BACKTRACE: 1
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest, macos-14]
+        rust-toolchain:
+          - nightly
+
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 120
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup ${{ matrix.rust-toolchain }} rust toolchain with caching
+      uses: brndnmtthws/rust-action@v1
+      with:
+        toolchain: ${{ matrix.rust-toolchain }}
+        components: rustfmt, clippy
+        enable-sccache: "false"
+
+    - name: build
+      run: cargo build
+
+
+  build_tools:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest, macos-14]
+        rust-toolchain:
+          - nightly
+
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 120
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup ${{ matrix.rust-toolchain }} rust toolchain with caching
+      uses: brndnmtthws/rust-action@v1
+      with:
+        toolchain: ${{ matrix.rust-toolchain }}
+        components: rustfmt, clippy
+        enable-sccache: "false"
+
+    - name: build_tools
+      run: cargo build --bin ply_to_gcloud

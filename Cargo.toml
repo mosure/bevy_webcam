@@ -1,0 +1,104 @@
+[package]
+name = "bevy_webcam"
+description = "bevy webcam plugin"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.85.0"
+authors = ["mosure <mitchell@mosure.me>"]
+license = "MIT OR Apache-2.0"
+keywords = [
+  "bevy",
+  "camera",
+]
+categories = [
+  "computer-vision",
+  "graphics",
+  "rendering",
+  "rendering::data-formats",
+]
+homepage = "https://github.com/mosure/bevy_webcam"
+repository = "https://github.com/mosure/bevy_webcam"
+readme = "README.md"
+exclude = [
+  ".devcontainer",
+  ".github",
+  "docs",
+  "dist",
+  "build",
+  "assets",
+  "credits",
+]
+default-run = "bevy_webcam"
+
+
+[features]
+default = []
+
+
+[dependencies]
+flume = "0.11"
+nokhwa = { version = "0.10", features = ["input-native"] }
+
+[dependencies.bevy]
+version = "0.16"
+default-features = false
+features = [
+  "bevy_asset",
+  "bevy_core_pipeline",
+  "bevy_log",
+  "bevy_render",
+  "bevy_ui",
+  "bevy_winit",
+  "serialize",
+  "std",
+  "x11",
+]
+
+
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+console_error_panic_hook = "0.1"
+getrandom = { version = "0.3", default-features = false, features = ["wasm_js"] }
+wasm-bindgen = "0.2"
+
+
+[dependencies.web-sys]
+version = "0.3"
+features = [
+  'Document',
+  'Element',
+  'HtmlElement',
+  'Location',
+  'Node',
+  'Window',
+]
+
+
+[dev-dependencies]
+criterion = { version = "0.6", features = ["html_reports"] }
+futures-intrusive = { version = "0.5.0" }
+pollster = { version = "0.4.0" }
+
+[profile.dev.package."*"]
+opt-level = 3
+
+[profile.dev]
+opt-level = 1
+
+[profile.release]
+lto = "thin"
+codegen-units = 1
+opt-level = 3
+
+[profile.wasm-release]
+inherits = "release"
+opt-level = "z"
+lto = "fat"
+codegen-units = 1
+
+
+[lib]
+path = "src/lib.rs"
+
+[[bin]]
+name = "bevy_webcam"
+path = "src/main.rs"
