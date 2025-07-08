@@ -40,7 +40,8 @@ flume = "0.11"
 nokhwa = { version = "0.10", features = ["input-native"] }
 
 [dependencies.bevy]
-version = "0.16"
+git = "https://github.com/bevyengine/bevy.git"
+rev = "b79b8133c881942a42bb359f998bd8792c48c1bc"
 default-features = false
 features = [
   "bevy_asset",
