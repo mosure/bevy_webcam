@@ -18,7 +18,14 @@ fn main() {
     let mut app = App::new();
 
     app.add_plugins((
-        DefaultPlugins,
+        DefaultPlugins
+            .set(WindowPlugin {
+                primary_window: Window {
+                    title: "bevy_webcam".to_string(),
+                    ..default()
+                }.into(),
+                ..default()
+            }),
         BevyWebcamPlugin::default(),
     ));
 
@@ -40,24 +47,17 @@ fn setup_ui(
 ) {
     commands.spawn(Camera2d);
 
-    commands.spawn(
-            Node {
-                display: Display::Grid,
-                width: Val::Percent(100.0),
-                height: Val::Percent(100.0),
-                grid_template_columns: RepeatedGridTrack::flex(1, 1.0),
-                grid_template_rows: RepeatedGridTrack::flex(1, 1.0),
-                ..default()
-            }
-        )
-        .with_children(|builder| {
-            builder.spawn(
-                ImageNode {
-                    image: stream.frame.clone(),
-                    ..default()
-                }
-            );
-        });
+    commands.spawn((
+        ImageNode {
+            image: stream.frame.clone(),
+            ..default()
+        },
+        Node {
+            width: Val::Percent(100.0),
+            height: Val::Percent(100.0),
+            ..default()
+        },
+    ));
 }
 
 
