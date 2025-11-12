@@ -63,7 +63,7 @@ fn setup_ui(
 
 pub fn press_esc_close(
     keys: Res<ButtonInput<KeyCode>>,
-    mut exit: EventWriter<AppExit>
+    mut exit: MessageWriter<AppExit>
 ) {
     if keys.just_pressed(KeyCode::Escape) {
         exit.write(AppExit::Success);

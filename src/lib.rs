@@ -3,10 +3,8 @@ use std::sync::mpsc::channel;
 
 use bevy::{
     prelude::*,
-    render::{
-        render_asset::RenderAssetUsages,
-        render_resource::{Extent3d, TextureDimension, TextureFormat},
-    },
+    asset::RenderAssetUsages,
+    render::render_resource::{Extent3d, TextureDimension, TextureFormat},
     // time::Stopwatch,
 };
 
