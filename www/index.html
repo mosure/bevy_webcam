@@ -3,38 +3,117 @@
     <meta charset="UTF-8" />
     <title>bevy_webcam</title>
     <style>
+      * {
+        box-sizing: border-box;
+      }
       body {
         width: 100%;
         height: 100%;
         margin: 0;
         padding: 0;
         overflow: hidden;
+        background: #111;
+        color: #fff;
+        font-family: sans-serif;
+      }
+      .full-size {
+        width: 100% !important;
+        height: 100% !important;
+      }
+      .loading {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        font-size: 18px;
+        color: #ccc;
+      }
+      .hidden {
+        display: none;
+      }
+      video {
+        position: absolute;
+        width: 0;
+        height: 0;
+        opacity: 0;
+        pointer-events: none;
       }
     </style>
   </head>
-  <script type="module">
-    import init from './out/bevy_webcam.js'
-    init()
-  </script>
-  <script>
-    // disable right-click context menu
-    document.addEventListener('contextmenu', event => event.preventDefault());
-  </script>
-  <style>
-    body {
-      width: 100%;
-      height: 100%;
-      margin: 0;
-      padding: 0;
-      overflow: hidden;
-    }
-
-    .full-size {
-      width: 100% !important;
-      height: 100% !important;
-    }
-  </style>
   <body>
+    <div class="loading">Requesting webcam access…</div>
+    <video id="webcam" autoplay muted playsinline></video>
     <canvas id="bevy" class="full-size"></canvas>
+
+    <script type="module">
+      import init, { frame_input } from './out/bevy_webcam.js';
+
+      async function startCamera() {
+        if (!navigator.mediaDevices?.getUserMedia) {
+          throw new Error('getUserMedia() is not supported in this browser');
+        }
+        const constraints = {
+          video: {
+            width: { ideal: 1280 },
+            height: { ideal: 720 },
+            facingMode: 'user',
+          },
+          audio: false,
+        };
+
+        const stream = await navigator.mediaDevices.getUserMedia(constraints);
+        const video = document.getElementById('webcam');
+        video.srcObject = stream;
+        await video.play();
+
+        if (typeof MediaStreamTrackProcessor === 'undefined') {
+          throw new Error('MediaStreamTrackProcessor is not available in this browser');
+        }
+
+        const [track] = stream.getVideoTracks();
+        const processor = new MediaStreamTrackProcessor({ track });
+        const reader = processor.readable.getReader();
+
+        async function pump() {
+          const { value: frame, done } = await reader.read();
+          if (done) {
+            console.warn('Video stream ended');
+            return;
+          }
+
+          try {
+            const format = 'RGBA';
+            const pixelBuffer = new Uint8Array(frame.allocationSize({ format }));
+            await frame.copyTo(pixelBuffer, { format });
+            frame_input(pixelBuffer, frame.displayWidth, frame.displayHeight);
+          } catch (error) {
+            console.error('Failed to process video frame', error);
+          } finally {
+            frame.close();
+          }
+
+          requestAnimationFrame(pump);
+        }
+
+        pump();
+      }
+
+      async function boot() {
+        await init();
+        await startCamera();
+        document.querySelector('.loading')?.classList.add('hidden');
+      }
+
+      boot().catch(error => {
+        console.error(error);
+        const loading = document.querySelector('.loading');
+        if (loading) {
+          loading.textContent = error.message;
+        }
+      });
+    </script>
+    <script>
+      document.addEventListener('contextmenu', event => event.preventDefault());
+    </script>
   </body>
 </html>

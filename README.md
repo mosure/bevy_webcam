@@ -43,6 +43,12 @@ fn setup_ui(
 
 ## features
 
-- [x] native camera
-- [ ] threaded camera
-- [ ] wasm camera
+- [x] native camera capture via `nokhwa`'s native backends
+- [x] threaded frame decoding on native targets, so the Bevy `Update` stage stays responsive
+- [x] wasm32 (browser) capture via the DOM `MediaStreamTrackProcessor` feeding pixels into the exported `frame_input` binding
+
+## platform notes
+
+- **Native:** frames are decoded on a dedicated worker thread and sent to the main Bevy world through a channel before being uploaded to the GPU.
+- **Wasm:** `www/index.html` acquires the webcam stream with `getUserMedia`, processes frames with `MediaStreamTrackProcessor`, and forwards RGBA pixels into the wasm module via `frame_input`. The Bevy plugin simply consumes those frames each `Update`, so there is no blocking `nokhwa` path on the browser.
+- **Camera selection on web:** the browser decides which device backs the stream the user grants; the `CameraIndex` setting currently applies to native builds only.
