@@ -9,10 +9,10 @@ export interface InitOutput {
   readonly memory: WebAssembly.Memory;
   readonly frame_input: (a: number, b: number, c: number, d: number) => void;
   readonly main: (a: number, b: number) => number;
-  readonly wasm_bindgen_1bfb1f57183977b1___convert__closures_____invoke___js_sys_88e7a65cbd91c848___Array__web_sys_c2b889b4184a1883___features__gen_ResizeObserver__ResizeObserver_____: (a: number, b: number, c: any, d: any) => void;
+  readonly wasm_bindgen_1bfb1f57183977b1___convert__closures_____invoke___js_sys_88e7a65cbd91c848___Array_____: (a: number, b: number, c: any) => void;
   readonly wasm_bindgen_1bfb1f57183977b1___closure__destroy___dyn_core_66a0c75b29bc39a___ops__function__FnMut__js_sys_88e7a65cbd91c848___Array____Output_______: (a: number, b: number) => void;
   readonly wasm_bindgen_1bfb1f57183977b1___convert__closures_____invoke______: (a: number, b: number) => void;
-  readonly wasm_bindgen_1bfb1f57183977b1___convert__closures_____invoke___js_sys_88e7a65cbd91c848___Array_____: (a: number, b: number, c: any) => void;
+  readonly wasm_bindgen_1bfb1f57183977b1___convert__closures_____invoke___js_sys_88e7a65cbd91c848___Array__web_sys_c2b889b4184a1883___features__gen_ResizeObserver__ResizeObserver_____: (a: number, b: number, c: any, d: any) => void;
   readonly wasm_bindgen_1bfb1f57183977b1___convert__closures_____invoke___wasm_bindgen_1bfb1f57183977b1___JsValue_____: (a: number, b: number, c: any) => void;
   readonly wasm_bindgen_1bfb1f57183977b1___closure__destroy___dyn_core_66a0c75b29bc39a___ops__function__FnMut__wasm_bindgen_1bfb1f57183977b1___JsValue____Output_______: (a: number, b: number) => void;
   readonly __wbindgen_malloc_command_export: (a: number, b: number) => number;

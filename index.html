@@ -16,10 +16,6 @@
         color: #fff;
         font-family: sans-serif;
       }
-      .full-size {
-        width: 100% !important;
-        height: 100% !important;
-      }
       .loading {
         position: absolute;
         top: 50%;
@@ -43,7 +39,6 @@
   <body>
     <div class="loading">Requesting webcam access…</div>
     <video id="webcam" autoplay muted playsinline></video>
-    <canvas id="bevy" class="full-size"></canvas>
 
     <script type="module">
       import init, { frame_input } from './out/bevy_webcam.js';
