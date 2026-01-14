@@ -1,9 +1,9 @@
 [package]
 name = "bevy_webcam"
 description = "bevy webcam plugin"
-version = "0.3.0"
+version = "0.4.0"
 edition = "2024"
-rust-version = "1.85.0"
+rust-version = "1.89.0"
 authors = ["mosure <mitchell@mosure.me>"]
 license = "MIT OR Apache-2.0"
 keywords = [
@@ -36,10 +36,10 @@ default = []
 
 
 [dependencies]
-flume = "0.11"
+flume = "^0.11"
 
 [dependencies.bevy]
-version = "0.17"
+version = "0.18"
 default-features = false
 features = [
   "bevy_asset",
