@@ -9,34 +9,38 @@ bevy camera input, using the nokhwa crate
 ## usage
 
 ```rust
-app.add_plugins((
-    DefaultPlugins,
-    BevyWebcamPlugin::default(),
-));
-app.add_systems(
-    Update,
-    setup_ui,
-);
+use bevy::prelude::*;
+use bevy_webcam::{BevyWebcamPlugin, WebcamStream};
 
-// ...
+fn main() {
+    App::new()
+        .add_plugins((DefaultPlugins, BevyWebcamPlugin::default()))
+        .add_systems(Startup, setup_camera)
+        .add_systems(Update, update_ui)
+        .run();
+}
 
-fn setup_ui(
-    mut commands: Commands,
-    stream: Res<WebcamStream>,
-) {
+fn setup_camera(mut commands: Commands, stream: Res<WebcamStream>) {
     commands.spawn(Camera2d);
 
     commands.spawn((
         ImageNode {
             image: stream.frame.clone(),
-            ..default()
+            ..Default::default()
         },
         Node {
             width: Val::Percent(100.0),
             height: Val::Percent(100.0),
-            ..default()
+            ..Default::default()
         },
     ));
+}
+
+fn update_ui(stream: Res<WebcamStream>, mut query: Query<&mut ImageNode>) {
+    *query.iter_mut().next().unwrap() = ImageNode {
+        image: stream.frame.clone(),
+        ..Default::default()
+    };
 }
 ```
 
